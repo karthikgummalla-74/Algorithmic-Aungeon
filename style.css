@@ -1,0 +1,371 @@
+:root {
+    --bg-dark: #1a1a1a;
+    --panel-bg: rgba(30, 30, 30, 0.6);
+    --panel-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #f0f0f0;
+    --text-secondary: #aaaaaa;
+    
+    /* Accents */
+    --neon-green: #39ff14;
+    --gold: #ffd700;
+    --electric-blue: #00ffff;
+    
+    --cell-bg: rgba(40, 40, 40, 0.8);
+    --cell-border: #333;
+    
+    --font-main: 'Inter', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    min-height: 100vh;
+    padding: 2rem;
+    /* Optional: A subtle dark gradient background */
+    background: radial-gradient(circle at top, #2a2a2a, #111);
+}
+
+.app-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.app-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(90deg, var(--electric-blue), var(--neon-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.app-header p {
+    color: var(--text-secondary);
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Glassmorphism Panel */
+.panel {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.panel h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--electric-blue);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.desc {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+/* Controls & Buttons */
+.controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    align-items: center;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-main);
+}
+
+.primary-btn {
+    background: var(--electric-blue);
+    color: #000;
+}
+
+.primary-btn:hover {
+    background: #00cccc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
+}
+
+.secondary-btn {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--panel-border);
+}
+
+.secondary-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Dungeon Grid */
+.dungeon-container {
+    position: relative;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(6, 60px);
+    grid-template-rows: repeat(6, 60px);
+    gap: 4px;
+}
+
+.grid-cell {
+    background: var(--cell-bg);
+    border: 1px solid var(--cell-border);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+    position: relative;
+    color: #fff;
+    cursor: default;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.grid-cell:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.15);
+    z-index: 10;
+}
+
+/* Tooltip */
+.grid-cell::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.grid-cell:hover::after {
+    opacity: 1;
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.result-text {
+    margin-top: 1rem;
+    font-weight: 600;
+    color: var(--neon-green);
+    text-align: center;
+    min-height: 1.5rem;
+}
+
+/* Loot Pouch (Greedy) */
+.pouch-controls {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: var(--electric-blue);
+}
+
+.pouch-visualization {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px dashed var(--panel-border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.pouch-bar-container {
+    width: 100%;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.pouch-bar {
+    height: 100%;
+    display: flex;
+    width: 0%; /* Dynamic */
+    transition: width 0.3s ease;
+}
+
+.pouch-segment {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #000;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 0.3s ease;
+}
+
+/* Items List */
+.available-items-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.item-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--panel-border);
+    padding: 0.75rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.item-card.highlight {
+    border-color: var(--gold);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.item-card .name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.item-card .stats {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.item-card .vw-ratio {
+    font-size: 0.75rem;
+    color: var(--gold);
+    margin-top: 0.25rem;
+}
+
+/* DP Table */
+.dp-table-container {
+    margin-top: 1.5rem;
+    overflow-x: auto;
+}
+
+.dp-table {
+    display: grid;
+    gap: 2px;
+    background: var(--panel-border);
+    border: 1px solid var(--panel-border);
+    width: fit-content;
+}
+
+.dp-cell {
+    background: var(--cell-bg);
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    opacity: 0; /* For fade in */
+}
+
+.dp-cell.header {
+    background: rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+    color: var(--electric-blue);
+    opacity: 1; /* Headers visible */
+}
+
+.dp-cell.visible {
+    opacity: 1;
+}
+
+.dp-cell.final-answer {
+    background: rgba(57, 255, 20, 0.2);
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.dp-cell.final-answer:hover {
+    background: var(--neon-green);
+    color: #000;
+    box-shadow: 0 0 15px var(--neon-green);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+}
